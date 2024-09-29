@@ -71,7 +71,7 @@ func (KeywordRankModel) FindAll(ctx context.Context, filter *model.KeywordRankFi
 		Description: filter.Description,
 	})
 
-	if err := query.Find(&res).Order("rank").Error; err != nil {
+	if err := query.Order("rank ASC").Find(&res).Error; err != nil {
 		return nil, err
 	}
 	return res, nil

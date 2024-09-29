@@ -2,10 +2,14 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 	"search-keyword-service/common"
+	"search-keyword-service/configs"
 	"search-keyword-service/internal/model"
 	"search-keyword-service/internal/repository/postgres"
+	"search-keyword-service/pkg/cache"
 	"search-keyword-service/pkg/log"
+	"time"
 )
 
 type KeywordRankServiceInterface interface {
@@ -24,7 +28,7 @@ func KeywordRankService() KeywordRankServiceInterface {
 }
 
 func (kr KeywordRankServiceImpl) SyncKeywordRank(ctx context.Context, keyword string) error {
-
+	log.Infof("SyncKeywordRank starting...")
 	res, err := postgres.KeywordRankRepo().FindAll(ctx, &model.KeywordRankFindQuery{
 		Keyword:     keyword,
 		Description: common.Qualify,
@@ -86,7 +90,7 @@ func (kr KeywordRankServiceImpl) SyncKeywordRank(ctx context.Context, keyword st
 			}
 		}
 	}
-
+	log.Infof("SyncKeywordRank end...")
 	return nil
 }
 
@@ -137,18 +141,15 @@ func (kr KeywordRankServiceImpl) SyncAllKeywordsRank(ctx context.Context) {
 }
 
 func (kr KeywordRankServiceImpl) GetKeywordRank(ctx context.Context, keyword string) []model.GetKeywordRankResponse {
-	resQualify, err := postgres.KeywordRankRepo().FindAll(ctx, &model.KeywordRankFindQuery{
-		Keyword:     keyword,
-		Description: common.Qualify,
-	})
-	if err != nil {
-		log.Errorf("GetKeywordRank: %v error: %v", keyword, err)
-		return nil
+	key := fmt.Sprintf(common.RedisKeyCacheResponse, "GetKeywordRank")
+	res, err := cache.Get[[]model.GetKeywordRankResponse](ctx, key)
+	if err == nil {
+		log.Infof("GetKeywordRank from cache")
+		return res
 	}
 
-	resUnqualify, err := postgres.KeywordRankRepo().FindAll(ctx, &model.KeywordRankFindQuery{
-		Keyword:     keyword,
-		Description: common.UnQualify,
+	resp, err := postgres.KeywordRankRepo().FindAll(ctx, &model.KeywordRankFindQuery{
+		Keyword: keyword,
 	})
 	if err != nil {
 		log.Errorf("GetKeywordRank: %v error: %v", keyword, err)
@@ -156,7 +157,7 @@ func (kr KeywordRankServiceImpl) GetKeywordRank(ctx context.Context, keyword str
 	}
 
 	lst := []model.GetKeywordRankResponse{}
-	for _, v := range resQualify {
+	for _, v := range resp {
 		lst = append(lst, model.GetKeywordRankResponse{
 			Keyword: v.Keyword,
 			Rank:    v.Rank,
@@ -165,13 +166,21 @@ func (kr KeywordRankServiceImpl) GetKeywordRank(ctx context.Context, keyword str
 		})
 	}
 
-	for _, v := range resUnqualify {
-		lst = append(lst, model.GetKeywordRankResponse{
-			Keyword: v.Keyword,
-			Rank:    v.Rank,
-			Url:     v.Url,
-			Title:   v.Title,
-		})
+	if len(lst) > 0 {
+		err := cache.SetEx(ctx, key, lst, time.Duration(configs.Config.ConfigTimeSchedule)*time.Second)
+		if err != nil {
+			log.Errorf("GetKeywordRank: cache.SetEx err %v", err)
+		}
+	}
+
+	if len(lst) == 0 {
+		// Start background task to update keyword ranks
+		go func(ctx context.Context, keyword string) {
+			err := KeywordRankService().SyncKeywordRank(ctx, keyword)
+			if err != nil {
+				log.Errorf("KeywordRankService().SyncKeywordRank: error %v", err)
+			}
+		}(context.Background(), keyword)
 	}
 
 	return lst

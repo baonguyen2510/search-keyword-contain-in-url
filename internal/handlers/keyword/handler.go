@@ -21,10 +21,6 @@ func (Handler) GetKeywordRank(c *gin.Context) {
 	keyword := c.Param("keyword")
 	ctx := c.Request.Context()
 	res := usecase.KeywordRankService().GetKeywordRank(ctx, keyword)
-	if len(res) == 0 {
-		httputil.RespondWarpJSON(c, http.StatusOK, "Keyword not found")
-		return
-	}
 
 	httputil.RespondWarpJSON(c, http.StatusOK, res)
 }
@@ -32,12 +28,15 @@ func (Handler) GetKeywordRank(c *gin.Context) {
 func (Handler) SyncKeywordRank(c *gin.Context) {
 
 	keyword := c.Param("word")
-	ctx := c.Request.Context()
-	err := usecase.KeywordRankService().SyncKeywordRank(ctx, keyword)
-	if err != nil {
-		httputil.RespondWrapError(c, http.StatusBadRequest, err.Error(), nil)
-		return
-	}
+	ctx := context.WithoutCancel(c.Request.Context())
+
+	// Start background task to update keyword ranks
+	go func(ctx context.Context, keyword string) {
+		err := usecase.KeywordRankService().SyncKeywordRank(ctx, keyword)
+		if err != nil {
+			return
+		}
+	}(ctx, keyword)
 
 	httputil.RespondWarpJSON(c, http.StatusOK, nil)
 }
