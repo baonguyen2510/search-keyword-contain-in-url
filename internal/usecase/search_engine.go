@@ -131,6 +131,12 @@ func rankResults(results []map[string]interface{}) []map[string]interface{} {
 
 	finalResults := make([]map[string]interface{}, 0, len(results))
 
+	// Remove duplicates from each slice to avoid adding duplicate results in the final slice
+	lstFirstValue = common.RemoveDuplicatesArrMap(lstFirstValue)
+	lstSecondValue = common.RemoveDuplicatesArrMap(lstSecondValue)
+	lstThirdValue = common.RemoveDuplicatesArrMap(lstThirdValue)
+	lstUnqualified = common.RemoveDuplicatesArrMap(lstUnqualified)
+
 	// Add all qualified results with sequential ranks starting from 1
 	for i, v := range lstFirstValue {
 		finalResults = append(finalResults, map[string]interface{}{
