@@ -1,0 +1,32 @@
+APP_ENV: dev
+SERVER_NAME: search-keyword-service
+HTTP_HOST: 0.0.0.0
+HTTP_PORT: 7003
+SWAGGER_ENABLE: true
+
+LOGGER_DEBUG: true
+LOGGER_SENSITIVE: false
+
+DB_CONNECTION:
+DB_HOST: localhost
+DB_PORT: 5432
+DB_USERNAME: postgres
+DB_PASSWORD: "123456789"
+DB_NAME: postgres
+DB_SCHEMA: search
+DB_LOGSQL: true
+DB_AUTOMIGRATE: false
+
+REDIS_SINGLE: true
+REDIS_ADDR: localhost:6379
+REDIS_PASSWORD: ""
+
+BASIC_AUTH_USER: admin
+BASIC_AUTH_PASSWORD: password
+
+# Config by second
+CONFIG_TIME_SCHEDULE: 3600
+
+# SEARCH_ENGINE_ADDR: "google"
+SEARCH_ENGINE_ADDR: "bing"
+# SEARCH_ENGINE_ADDR: "duckduckgo"
