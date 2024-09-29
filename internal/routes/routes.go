@@ -7,6 +7,8 @@ import (
 	"search-keyword-service/pkg/http"
 	"time"
 
+	_ "search-keyword-service/docs"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"

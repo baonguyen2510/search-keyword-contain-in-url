@@ -10,6 +10,12 @@ const (
 	appName = "search-keyword-service"
 )
 
+// @title Search Keyword Service
+// @version 1.0
+// @description Service for search, update ranking of keyword.
+// @host localhost:7003
+// @BasePath /v1/search
+// @schemes		http
 func main() {
 	configs.Init()
 

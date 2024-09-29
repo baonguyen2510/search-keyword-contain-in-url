@@ -65,3 +65,20 @@ curl --location 'localhost:7003/v1/search/keyword/rank/:word' \
 curl --location --request POST 'localhost:7003/v1/search/keyword/sync/qualgo' \
 --header 'Authorization: Basic YWRtaW46cGFzc3dvcmQ='
 ```
+
+## How to generate, access swagger
+1. Install swagger latest version
+```
+go get -u github.com/swaggo/swag/cmd/swag
+go mod tidy
+go install github.com/swaggo/swag/cmd/swag@latest
+```
+2. Update description in handler of API
+3. Generate swagger
+```
+swag init
+```
+4. Access swagger
+```
+http://localhost:7003/v1/search/swagger/index.html
+```

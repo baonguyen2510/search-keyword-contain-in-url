@@ -22,3 +22,8 @@ type GetKeywordRankResponse struct {
 	Url     string `json:"url"`
 	Title   string `json:"title"`
 }
+
+type KeywordResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
