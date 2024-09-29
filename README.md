@@ -1,4 +1,4 @@
-# search-keyword-contain-in-url
+# Search Keyword Contain In Url
 
 ## How to init, start service
 1. Create a schema, table for database
@@ -61,5 +61,7 @@ curl --location 'localhost:7003/v1/search/keyword/rank/:word' \
 ```
 
 3. API for update rank of keyword
+```
 curl --location --request POST 'localhost:7003/v1/search/keyword/sync/qualgo' \
 --header 'Authorization: Basic YWRtaW46cGFzc3dvcmQ='
+```
