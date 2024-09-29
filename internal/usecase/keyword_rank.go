@@ -128,7 +128,7 @@ func (kr KeywordRankServiceImpl) SyncAllKeywordsRank(ctx context.Context) {
 			if m[linkUrl].Url == i["url"].(string) && m[linkUrl].Rank != rankInt && m[linkUrl].Rank > rankInt {
 				err = postgres.KeywordRankRepo().Update(ctx, m[linkUrl].ID, postgres.KeywordRank{
 					Rank: rankInt,
-				})
+				}, "rank")
 				if err != nil {
 					log.Warnf("postgres.KeywordRankRepo().Update: err %v", err)
 					continue
