@@ -1,7 +1,7 @@
 # Search Keyword Contain In Url
 
 ## How to init, start service
-1. Create a schema, table for database
+1. Create a schema, table for database PostgreSQL
 path: search-keyword-contain-in-url/deploy/migrate.sql
 ```
 CREATE SCHEMA IF NOT exists "search";

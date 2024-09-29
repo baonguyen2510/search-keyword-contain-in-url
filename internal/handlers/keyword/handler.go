@@ -27,7 +27,7 @@ func New() *Handler {
 // @Router /keyword/rank/:word [get]
 func (Handler) GetKeywordRank(c *gin.Context) {
 
-	keyword := c.Param("keyword")
+	keyword := c.Param("word")
 	ctx := c.Request.Context()
 	if len(keyword) == 0 {
 		httputil.RespondWrapError(c, http.StatusBadRequest, "invalid_params", nil)
