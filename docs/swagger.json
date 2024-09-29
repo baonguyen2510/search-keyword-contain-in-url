@@ -1,0 +1,114 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Service for search, update ranking of keyword.",
+        "title": "Search Keyword Service",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:7003",
+    "basePath": "/v1/search",
+    "paths": {
+        "/keyword/rank/:word": {
+            "get": {
+                "description": "Get the current rank of a specified keyword.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "GetKeywordRank"
+                ],
+                "summary": "Retrieve keyword rank",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Keyword to search",
+                        "name": "word",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetKeywordRankResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/model.KeywordResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Update rank of a specified keyword.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SyncKeywordRank"
+                ],
+                "summary": "Update keyword rank",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Keyword to update",
+                        "name": "word",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/model.KeywordResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/model.KeywordResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.GetKeywordRankResponse": {
+            "type": "object",
+            "properties": {
+                "keyword": {
+                    "type": "string"
+                },
+                "rank": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.KeywordResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,75 @@
+basePath: /v1/search
+definitions:
+  model.GetKeywordRankResponse:
+    properties:
+      keyword:
+        type: string
+      rank:
+        type: integer
+      title:
+        type: string
+      url:
+        type: string
+    type: object
+  model.KeywordResponse:
+    properties:
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+host: localhost:7003
+info:
+  contact: {}
+  description: Service for search, update ranking of keyword.
+  title: Search Keyword Service
+  version: "1.0"
+paths:
+  /keyword/rank/:word:
+    get:
+      description: Get the current rank of a specified keyword.
+      parameters:
+      - description: Keyword to search
+        in: query
+        name: word
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/model.GetKeywordRankResponse'
+        "400":
+          description: Failed
+          schema:
+            $ref: '#/definitions/model.KeywordResponse'
+      summary: Retrieve keyword rank
+      tags:
+      - GetKeywordRank
+    post:
+      description: Update rank of a specified keyword.
+      parameters:
+      - description: Keyword to update
+        in: query
+        name: word
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/model.KeywordResponse'
+        "400":
+          description: Failed
+          schema:
+            $ref: '#/definitions/model.KeywordResponse'
+      summary: Update keyword rank
+      tags:
+      - SyncKeywordRank
+schemes:
+- http
+swagger: "2.0"
