@@ -82,3 +82,37 @@ swag init
 ```
 http://localhost:7003/v1/search/swagger/index.html
 ```
+
+## Unit Test
+1. Modify response handler keyword GetKeywordRank
+```
+	keyword := c.Param("word")
+	// ctx := c.Request.Context()
+	if len(keyword) == 0 {
+		httputil.RespondWrapError(c, http.StatusBadRequest, "invalid_params", nil)
+		return
+	}
+
+	// res := usecase.KeywordRankService().GetKeywordRank(ctx, keyword)
+	res := []model.GetKeywordRankResponse{}
+	res = append(res, model.GetKeywordRankResponse{
+		Keyword: "qualgo",
+		Rank:    1,
+		Url:     "https://www.qualgo.io/",
+		Title:   "Qualgo",
+	},
+		model.GetKeywordRankResponse{
+			Keyword: "qualgo",
+			Rank:    2,
+			Url:     "/?FORM=Z9FD1",
+			Title:   "",
+		},
+	)
+
+	httputil.RespondWarpJSON(c, http.StatusOK, res)
+```
+2. Go to directory where you want to test
+```
+cd internal/handler/keyword
+go test -v
+```
